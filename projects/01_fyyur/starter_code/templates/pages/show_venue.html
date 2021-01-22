@@ -2,10 +2,23 @@
 {% block title %}Venue Search{% endblock %}
 {% block content %}
 <div class="row">
+<div class="col-md-12">
+
+</div>
 	<div class="col-sm-6">
 		<h1 class="monospace">
 			{{ venue.name }}
 		</h1>
+        <div style="margin-top: 2px">
+        <a href="/venues/{{ venue.id }}/edit">
+            <button id="edit-button" type="button" class="btn btn-primary btn-sm">
+                Edit Venue
+            </button>
+        </a>
+        <button id="delete-button" type="button" data-id="{{ venue.id }}" class="btn btn-danger btn-sm">
+            Delete Venue
+        </button>
+    </div>
 		<p class="subtitle">
 			ID: {{ venue.id }}
 		</p>
@@ -41,7 +54,10 @@
 			<i class="fas fa-moon"></i> Not currently seeking talent
 		</p>
 		{% endif %}
-	</div>
+
+
+
+    </div>
 	<div class="col-sm-6">
 		<img src="{{ venue.image_link }}" alt="Venue Image" />
 	</div>
@@ -54,7 +70,7 @@
 			<div class="tile tile-show">
 				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
 				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<h6>{{ show.start_date|datetime(show.start_time, 'full') }}</h6>
 			</div>
 		</div>
 		{% endfor %}
@@ -68,12 +84,28 @@
 			<div class="tile tile-show">
 				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
 				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<h6>{{ show.start_date|datetime(show.start_time, 'full') }}</h6>
 			</div>
 		</div>
 		{% endfor %}
 	</div>
 </section>
+    <script>
+      const deleteBtn = document.getElementById('delete-button');
+        deleteBtn.onclick = function(e) {
+          const todoId = deleteBtn.dataset['id'];
+          deleteBtn.innerText = 'Deleting......';
+          fetch('/venues/' + todoId, {
+            method: 'DELETE'
+          })
+          .then(function() {
+             document.location.href="/";
+          })
+          .catch(function() {
+            deleteBtn.innerText = 'Delete Venue';
+          })
+        }
+      </script>
 
 {% endblock %}
 

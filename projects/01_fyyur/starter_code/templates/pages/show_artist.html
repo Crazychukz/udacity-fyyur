@@ -6,6 +6,21 @@
 		<h1 class="monospace">
 			{{ artist.name }}
 		</h1>
+            <div style="margin-top: 2px">
+        <a href="/artists/{{ artist.id }}/edit">
+            <button id="edit-button" type="button" class="btn btn-primary btn-sm">
+                Edit Artist
+            </button>
+        </a>
+                <a href="/artists/{{ artist.id }}/calender">
+                    <button id="edit-button" type="button" class="btn btn-success btn-sm">
+                       <i class="fas fa-music"></i> Calender
+                    </button>
+                </a>
+        <button id="delete-button" type="button" data-id="{{ artist.id }}" class="btn btn-danger btn-sm">
+            Delete Artist
+        </button>
+    </div>
 		<p class="subtitle">
 			ID: {{ artist.id }}
 		</p>
@@ -51,7 +66,7 @@
 			<div class="tile tile-show">
 				<img src="{{ show.venue_image_link }}" alt="Show Venue Image" />
 				<h5><a href="/venues/{{ show.venue_id }}">{{ show.venue_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<h6>{{ show.start_date|datetime( show.start_time,'full') }}</h6>
 			</div>
 		</div>
 		{% endfor %}
@@ -65,12 +80,27 @@
 			<div class="tile tile-show">
 				<img src="{{ show.venue_image_link }}" alt="Show Venue Image" />
 				<h5><a href="/venues/{{ show.venue_id }}">{{ show.venue_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<h6>{{ show.start_date|datetime( show.start_time,'full') }}</h6>
 			</div>
 		</div>
 		{% endfor %}
 	</div>
 </section>
-
+    <script>
+      const deleteBtn = document.getElementById('delete-button');
+        deleteBtn.onclick = function(e) {
+          const artistId = deleteBtn.dataset['id'];
+          deleteBtn.innerText = 'Deleting......';
+          fetch('/artists/' + artistId, {
+            method: 'DELETE'
+          })
+          .then(function() {
+             document.location.href="/";
+          })
+          .catch(function() {
+            deleteBtn.innerText = 'Delete Artist';
+          })
+        }
+      </script>
 {% endblock %}
 

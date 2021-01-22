@@ -1,7 +1,11 @@
 from datetime import datetime
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms import StringField, SelectField, SelectMultipleField, TextAreaField, RadioField, BooleanField
+from wtforms.validators import DataRequired, AnyOf, URL, InputRequired
+from wtforms.fields.html5 import DateTimeLocalField, DateTimeField, DateField, TimeField
+
+possible_names = {'0': 'hans', '1': 'sepp', '3': 'max'}
+
 
 class ShowForm(Form):
     artist_id = StringField(
@@ -10,11 +14,24 @@ class ShowForm(Form):
     venue_id = StringField(
         'venue_id'
     )
-    start_time = DateTimeField(
+    start_time = TimeField(
         'start_time',
+        format='%H:%M',
         validators=[DataRequired()],
         default= datetime.today()
     )
+
+    start_date = DateField(
+        'start_date',
+        format='%Y-%m-%d',
+        validators=[DataRequired()],
+        default= datetime.today(),
+
+    )
+    name = SelectField("Enter a Name",
+                       choices=[("", "")] + [(uuid, name) for uuid, name in possible_names.items()],
+                       validators=[InputRequired()])
+
 
 class VenueForm(Form):
     name = StringField(
@@ -88,6 +105,12 @@ class VenueForm(Form):
     image_link = StringField(
         'image_link'
     )
+    seeking_description = TextAreaField(
+        'seeking_description'
+    )
+    seeking_talent = RadioField(
+        'seeking_talent', choices=[True,False]
+    )
     genres = SelectMultipleField(
         # TODO implement enum restriction
         'genres', validators=[DataRequired()],
@@ -116,6 +139,10 @@ class VenueForm(Form):
     facebook_link = StringField(
         'facebook_link', validators=[URL()]
     )
+    website = StringField(
+        'website', validators=[URL()]
+    )
+
 
 class ArtistForm(Form):
     name = StringField(
@@ -216,5 +243,19 @@ class ArtistForm(Form):
         # TODO implement enum restriction
         'facebook_link', validators=[URL()]
     )
+
+    website = StringField(
+        'website', validators=[URL()]
+    )
+
+    seeking_description = TextAreaField(
+        'seeking_description'
+    )
+    seeking_venue = RadioField(
+        'seeking_venue', choices=[True,False]
+    )
+
+
+
 
 # TODO IMPLEMENT NEW ARTIST FORM AND NEW SHOW FORM
